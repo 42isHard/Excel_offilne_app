@@ -4,7 +4,7 @@ import logging
 import pandas as pd
 from tqdm import tqdm
 import os
-from conversion_rate_popup import ConversionRatePopup
+from GUI.conversion_rate_popup import ConversionRatePopup
 
 
 class OperationsView:
