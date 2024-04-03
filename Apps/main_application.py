@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from GUI.file_selection_page import FileSelectionPage
+from Apps.file_selection_page import FileSelectionPage
 
 
 class MainApplication(tk.Tk):
