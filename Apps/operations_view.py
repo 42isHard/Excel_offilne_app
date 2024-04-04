@@ -4,6 +4,7 @@ import logging
 import pandas as pd
 from tqdm import tqdm
 from Apps.conversion_rate_popup import ConversionRatePopup
+import os
 
 
 class OperationsView:
@@ -82,7 +83,9 @@ class OperationsView:
             logging.info(f"Traitement du fichier : {fp}")
             try:
                 df = self.read_excel_file(fp)
-                df.drop(df.columns[0], axis=1, inplace=True)
+                file_prefix = self.extract_file_prefix(fp)
+                df.iloc[:, 0] = file_prefix
+                df.rename(columns={df.columns[0]: 'Origine'}, inplace=True)
                 if self.should_convert(fp):
                     conversion_rate = self.get_conversion_rate()
                     df = self.convert_column(df, 'Solde Tenue de Compte', conversion_rate)
@@ -90,6 +93,12 @@ class OperationsView:
             except Exception as e:
                 logging.error("Erreur lors de la lecture du fichier " + fp + ": " + str(e))
         return pd.concat(all_dfs, ignore_index=True)
+
+    def extract_file_prefix(self, filepath):
+        # Extraction du préfixe du nom de fichier (tout ce qui se trouve avant le premier "_")
+        filename = os.path.basename(filepath)
+        file_prefix = filename.split("_")[0]
+        return file_prefix
 
     def read_excel_file(self, filepath):
         """
