@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from tkinter import messagebox
 
+
 class ConversionRatePopup(ctk.CTkToplevel):
     """
     Popup pour entrer le taux de conversion monétaire.

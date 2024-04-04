@@ -5,6 +5,7 @@ import pandas as pd
 from tqdm import tqdm
 from Apps.conversion_rate_popup import ConversionRatePopup
 
+
 class OperationsView:
     """
     Vue pour les opérations sur les fichiers dans l'application.
@@ -28,7 +29,8 @@ class OperationsView:
         """
         Crée les widgets pour l'interface utilisateur de la vue des opérations.
         """
-        ctk.CTkButton(self.parent, text="Concaténer les fichiers sélectionnés", command=self.execute_operations).pack(pady=10)
+        ctk.CTkButton(self.parent, text="Concaténer les fichiers sélectionnés", command=self.execute_operations).pack(
+            pady=10)
         ctk.CTkButton(self.parent, text="Retour", command=self.main_app.create_main_menu).pack(pady=10)
 
     def execute_operations(self):
@@ -39,7 +41,8 @@ class OperationsView:
         try:
             logging.info("Début de la combinaison des fichiers.")
             combined_df = self.combine_files(self.main_app.selected_filepaths)
-            messagebox.showinfo("Succès", "Les fichiers ont été combinés. Veuillez sélectionner un emplacement pour sauvegarder le fichier.")
+            messagebox.showinfo("Succès",
+                                "Les fichiers ont été combinés. Veuillez sélectionner un emplacement pour sauvegarder le fichier.")
         except Exception as e:
             logging.exception("Erreur lors de la combinaison des fichiers.")
             messagebox.showerror("Erreur", "Une erreur est survenue lors de la combinaison des fichiers.")
