@@ -78,6 +78,7 @@ class OperationsView:
             logging.info(f"Traitement du fichier : {fp}")
             try:
                 df = self.read_excel_file(fp)
+                df.drop(df.columns[0], axis=1, inplace=True)
                 if self.should_convert(fp):
                     conversion_rate = self.get_conversion_rate()
                     df = self.convert_column(df, 'Solde Tenue de Compte', conversion_rate)
