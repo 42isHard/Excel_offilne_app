@@ -1,67 +1,9 @@
 import customtkinter as ctk
-from tkinter import filedialog, messagebox, ttk
+from tkinter import filedialog, messagebox
 import logging
 import pandas as pd
 from tqdm import tqdm
 from Apps.conversion_rate_popup import ConversionRatePopup
-
-
-class ProgressBarManager:
-    """
-    Gestionnaire de la barre de progression pour les opérations de traitement des fichiers.
-
-    Attributes:
-        progress_bar (ttk.Progressbar): Barre de progression Tkinter.
-    """
-
-    def __init__(self, parent):
-        """
-        Initialise le ProgressBarManager avec un widget parent.
-
-        Args:
-            parent: Widget parent Tkinter/CustomTkinter pour la barre de progression.
-        """
-        self.progress_bar = self.create_progress_bar(parent)
-
-    def create_progress_bar(self, parent):
-        """
-        Crée une barre de progression Tkinter.
-
-        Args:
-            parent: Widget parent Tkinter/CustomTkinter pour la barre de progression.
-
-        Returns:
-            Un objet ttk.Progressbar.
-        """
-        progress_bar = ttk.Progressbar(parent, orient='horizontal', mode='determinate')
-        progress_bar.pack_forget()  # Cache la barre de progression initialement
-        return progress_bar
-
-    def start_progress(self, max_value):
-        """
-        Démarre la barre de progression avec une valeur maximale.
-
-        Args:
-            max_value: Valeur maximale de la barre de progression.
-        """
-        self.progress_bar['maximum'] = max_value
-        self.progress_bar.pack()  # Affiche la barre de progression
-
-    def update_progress(self, value):
-        """
-        Met à jour la valeur actuelle de la barre de progression.
-
-        Args:
-            value: La nouvelle valeur de la barre de progression.
-        """
-        self.progress_bar["value"] = value
-
-    def stop_progress(self):
-        """
-        Arrête et cache la barre de progression.
-        """
-        self.progress_bar.pack_forget()  # Cache la barre de progression
-
 
 class OperationsView:
     """
@@ -80,33 +22,27 @@ class OperationsView:
         """
         self.main_app = main_app
         self.parent = parent
-        self.progress_manager = ProgressBarManager(parent)
         self.create_widgets()
 
     def create_widgets(self):
         """
         Crée les widgets pour l'interface utilisateur de la vue des opérations.
         """
-        ctk.CTkButton(self.parent, text="Concaténer les fichiers sélectionnés", command=self.execute_operations).pack(
-            pady=10)
+        ctk.CTkButton(self.parent, text="Concaténer les fichiers sélectionnés", command=self.execute_operations).pack(pady=10)
         ctk.CTkButton(self.parent, text="Retour", command=self.main_app.create_main_menu).pack(pady=10)
 
     def execute_operations(self):
         """
         Exécute le processus de concaténation des fichiers sélectionnés.
         """
-        self.progress_manager.start_progress(len(self.main_app.selected_filepaths))
         combined_df = None
         try:
             logging.info("Début de la combinaison des fichiers.")
             combined_df = self.combine_files(self.main_app.selected_filepaths)
-            messagebox.showinfo("Succès",
-                                "Les fichiers ont été combinés. Veuillez sélectionner un emplacement pour sauvegarder le fichier.")
+            messagebox.showinfo("Succès", "Les fichiers ont été combinés. Veuillez sélectionner un emplacement pour sauvegarder le fichier.")
         except Exception as e:
             logging.exception("Erreur lors de la combinaison des fichiers.")
             messagebox.showerror("Erreur", "Une erreur est survenue lors de la combinaison des fichiers.")
-        finally:
-            self.progress_manager.stop_progress()
 
         if combined_df is not None:
             self.save_combined_file(combined_df)
@@ -148,7 +84,6 @@ class OperationsView:
                     conversion_rate = self.get_conversion_rate()
                     df = self.convert_column(df, 'Solde Tenue de Compte', conversion_rate)
                 all_dfs.append(df)
-                self.progress_manager.update_progress(len(all_dfs))
             except Exception as e:
                 logging.error("Erreur lors de la lecture du fichier " + fp + ": " + str(e))
         return pd.concat(all_dfs, ignore_index=True)
