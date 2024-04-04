@@ -1,11 +1,12 @@
 import customtkinter as ctk
+
 from Apps.file_selection_page import FileSelectionPage
 
 
 class MainApplication(ctk.CTk):
     def __init__(self):
         super().__init__()
-        self.title("Mon Application")
+        self.title("Automatisation First Finance")
         self.geometry("600x450")
 
         ctk.set_appearance_mode("System")  # "System", "Dark", ou "Light"
@@ -19,7 +20,7 @@ class MainApplication(ctk.CTk):
     def create_main_menu(self):
         self.clear_frame()
         ctk.CTkLabel(self.main_frame, text="Sélectionnez une fonctionnalité").pack(pady=10)
-        ctk.CTkButton(self.main_frame, text="Fonctionnalité de sélection de fichiers",
+        ctk.CTkButton(self.main_frame, text="Concaténer plusieurs fichiers xlsx",
                       command=self.open_file_selection).pack(pady=10)
 
     def open_file_selection(self):
@@ -34,6 +35,7 @@ class MainApplication(ctk.CTk):
             widget.destroy()
         self.main_frame.pack_forget()
         self.main_frame.pack(expand=True, fill='both', padx=10, pady=10)
+
 
 if __name__ == "__main__":
     app = MainApplication()

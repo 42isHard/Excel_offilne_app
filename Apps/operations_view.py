@@ -1,10 +1,10 @@
-import tkinter as tk
-from tkinter import ttk, filedialog, messagebox
+import customtkinter as ctk
+from tkinter import filedialog, messagebox
 import logging
 import pandas as pd
 from tqdm import tqdm
 from Apps.conversion_rate_popup import ConversionRatePopup
-
+from tkinter import ttk, messagebox
 
 class ProgressBarManager:
     def __init__(self, parent):
@@ -34,9 +34,8 @@ class OperationsView:
         self.create_widgets()
 
     def create_widgets(self):
-        self.create_label("Opérations sur les fichiers", pady=10)
-        self.create_button("Exécuter l'opération", self.execute_operations, pady=10)
-        self.create_button("Retour", self.main_app.create_main_menu, pady=10)
+        ctk.CTkButton(self.parent, text="Concaténer les fichiers sélectionnés", command=self.execute_operations).pack(pady=10)
+        ctk.CTkButton(self.parent, text="Retour", command=self.main_app.create_main_menu).pack(pady=10)
 
     def create_label(self, text, **options):
         ttk.Label(self.parent, text=text, style='TLabel').pack(**options)
