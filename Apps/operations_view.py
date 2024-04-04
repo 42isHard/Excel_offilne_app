@@ -31,7 +31,7 @@ class OperationsView:
         """
         ctk.CTkButton(self.parent, text="Concaténer les fichiers sélectionnés", command=self.execute_operations).pack(
             pady=10)
-        ctk.CTkButton(self.parent, text="Retour", command=self.main_app.create_main_menu).pack(pady=10)
+        ctk.CTkButton(self.parent, text="Retourner à l'accueil", command=self.main_app.create_main_menu).pack(pady=10)
 
     def execute_operations(self):
         """

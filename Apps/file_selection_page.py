@@ -90,4 +90,4 @@ class FileSelectionPage:
         """
         Ajouter un bouton de retour pour revenir au menu principal.
         """
-        ctk.CTkButton(self.parent, text="Retour", command=self.main_app.create_main_menu).pack(pady=10)
+        ctk.CTkButton(self.parent, text="Retourner à l'accueil", command=self.main_app.create_main_menu).pack(pady=10)

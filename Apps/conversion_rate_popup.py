@@ -19,7 +19,7 @@ class ConversionRatePopup(ctk.CTkToplevel):
         super().__init__(parent)
         self.parent = parent  # Enregistrement de la fenêtre parente
         self.title("Taux de conversion")
-        self.geometry("300x150")
+        self.geometry("300x200")
         self.conversion_rate = None  # Taux de conversion à récupérer
         self.create_widgets()
 
@@ -33,9 +33,6 @@ class ConversionRatePopup(ctk.CTkToplevel):
         Crée les widgets pour la popup de taux de conversion.
         """
         ctk.CTkLabel(self, text="Le logiciel a détecté une colonne en HKD.").pack(pady=5)
-        ctk.CTkLabel(self,
-                     text="Pour garder la cohérence du fichier concténé").pack(
-            pady=5)
         ctk.CTkLabel(self, text="Veuillez entrer le taux de conversion HKD/EUR:").pack(pady=5)
         self.conversion_rate_entry = ctk.CTkEntry(self)
         self.conversion_rate_entry.pack(pady=5)
