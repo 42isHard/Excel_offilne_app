@@ -26,10 +26,21 @@ class OperationsView:
         self.parent = parent
         self.create_widgets()
 
+    def select_rules_file(self):
+        """ Permet à l'utilisateur de sélectionner un fichier de règles Excel. """
+        file_types = [('Excel files', '*.xlsx')]
+        self.rules_file = filedialog.askopenfilename(filetypes=file_types, title="Sélectionnez le fichier de règles")
+        if self.rules_file:
+            messagebox.showinfo("Fichier de règles sélectionné",
+                                f"Le fichier de règles sélectionné est :\n{self.rules_file}")
+        else:
+            messagebox.showwarning("Aucun fichier sélectionné", "Veuillez sélectionner un fichier de règles.")
+
     def create_widgets(self):
         """
         Crée les widgets pour l'interface utilisateur de la vue des opérations.
         """
+        ctk.CTkButton(self.parent, text="Choisir le fichier de règles", command=self.select_rules_file).pack(pady=10)
         ctk.CTkButton(self.parent, text="Concaténer les fichiers sélectionnés", command=self.execute_operations).pack(
             pady=10)
         ctk.CTkButton(self.parent, text="Retourner à l'accueil", command=self.main_app.create_main_menu).pack(pady=10)
@@ -50,6 +61,25 @@ class OperationsView:
 
         if combined_df is not None:
             self.save_combined_file(combined_df)
+
+    def match_rule(self, row, rules_df):
+        pcg = str(row['Compte Général - Code'])
+        code_analytique = str(row['Section Analytique - Code'])
+
+        for _, rule in rules_df.iterrows():
+            pcg_rule = str(rule['PCG'])
+            codes_analytiques_rule = str(rule['Codes analytiques']).split('/')
+            #print(rule, rules_df)
+
+            # Vérifier si PCG correspond et si Code Analytique correspond ou commence par les codes spécifiés
+            if pcg == pcg_rule and any(
+                    code_analytique == code or code_analytique.startswith(code) for code in codes_analytiques_rule):
+                #print(pcg, pcg_rule, code_analytique, codes_analytiques_rule)
+                return {
+                    'Libellés analytiques 2024': rule['Libellés analytiques 2024'],
+                    'Regroupements analytiques': rule['Regroupements analytiques']
+                }
+        return None
 
     def save_combined_file(self, dataframe):
         """
@@ -78,6 +108,14 @@ class OperationsView:
         Returns:
             Un DataFrame combiné contenant les données de tous les fichiers.
         """
+        # Vérifier si le fichier de règles est sélectionné
+        if not hasattr(self, 'rules_file') or not self.rules_file:
+            messagebox.showerror("Erreur", "Veuillez sélectionner un fichier de règles.")
+            return None
+
+        # Charger le fichier de règles
+        rules_df = pd.read_excel(self.rules_file)
+
         all_dfs = []
         for fp in tqdm(filepaths, total=len(filepaths), unit="file"):
             logging.info(f"Traitement du fichier : {fp}")
@@ -86,12 +124,22 @@ class OperationsView:
                 file_prefix = self.extract_file_prefix(fp)
                 df.iloc[:, 0] = file_prefix
                 df.rename(columns={df.columns[0]: 'Origine'}, inplace=True)
+
+                # Application des règles pour chaque ligne
+                for index, row in df.iterrows():
+                    matched_rule = self.match_rule(row, rules_df)
+                    if matched_rule is not None:
+                        df.at[index, 'Libellés analytiques 2024'] = matched_rule['Libellés analytiques 2024']
+                        df.at[index, 'Regroupements analytiques'] = matched_rule['Regroupements analytiques']
+
                 if self.should_convert(fp):
                     conversion_rate = self.get_conversion_rate()
                     df = self.convert_column(df, 'Solde Tenue de Compte', conversion_rate)
+
                 all_dfs.append(df)
             except Exception as e:
                 logging.error("Erreur lors de la lecture du fichier " + fp + ": " + str(e))
+
         return pd.concat(all_dfs, ignore_index=True)
 
     def extract_file_prefix(self, filepath):
