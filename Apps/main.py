@@ -19,7 +19,7 @@ class MainApplication(ctk.CTk):
         self.title("Automatisation First Finance")
         self.geometry("600x450")
 
-        ctk.set_appearance_mode("System")  # Choix du mode d'apparence : "System", "Dark", ou "Light"
+        ctk.set_appearance_mode("Dark")  # Choix du mode d'apparence : "System", "Dark", ou "Light"
         ctk.set_default_color_theme("blue")  # Thème de couleur par défaut
 
         self.main_frame = ctk.CTkFrame(self)  # Création du cadre principal
