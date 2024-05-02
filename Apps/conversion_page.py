@@ -35,6 +35,13 @@ class ConversionPage:
             if 'Compte Général - Code' in df.columns:
                 df['Compte Général - Code'] = df['Compte Général - Code'].astype(str).map(code_map).fillna(
                     df['Compte Général - Code'])
+
+                df.iloc[:, 0] = ""
+
+                # Ajouter 5 lignes vides en haut
+                empty_df = pd.DataFrame([[''] * len(df.columns)] * 5, columns=df.columns)
+                df = pd.concat([empty_df, df], ignore_index=True)
+
                 # Créer un nouveau chemin pour le fichier converti
                 base, ext = os.path.splitext(file_path)
                 new_file_path = f"{base}_CODE_FR{ext}"
