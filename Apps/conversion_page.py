@@ -37,7 +37,7 @@ class ConversionPage:
                     df['Compte Général - Code'])
                 # Créer un nouveau chemin pour le fichier converti
                 base, ext = os.path.splitext(file_path)
-                new_file_path = f"{base}_converted{ext}"
+                new_file_path = f"{base}_CODE_FR{ext}"
                 df.to_excel(new_file_path, index=False)
                 print(f"Le fichier converti a été enregistré sous : {new_file_path}")
             else:
